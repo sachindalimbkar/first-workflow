@@ -1,0 +1,8 @@
+name: "Display Date"
+description: "Current Date"
+runs:
+  using: "composite"
+  steps:
+    -name: Display Date
+    run: echo "Running $(date)"
+    shell: bash
