@@ -4,5 +4,5 @@ runs:
   using: "composite"
   steps:
     -name: List Files
-    run: echo "Running $(ls -la")"
+    run: echo "Running $(ls -la)"
     shell: bash
