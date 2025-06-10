@@ -1,0 +1,28 @@
+name: GCR build and push
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Decode base64 key and configure credentials
+        run: |
+          echo "${{ secrets.GCP_SA }}" | base64 -d > sa-key.json
+          echo "::add-mask::$(cat sa-key.json)"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/sa-key.json" >> $GITHUB_ENV
+
+      - name: Docker login to Artifact Registry
+        run: |
+          docker login -u _json_key --password-stdin https://europe-west3-docker.pkg.dev < sa-key.json
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE="europe-west3-docker.pkg.dev/flawless-augury-461509-f7/demo/app:latest"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
